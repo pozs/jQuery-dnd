@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Example for: require plugin for jQuery</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<script type="text/javascript" src="../src/jquery.require.js"></script>
+<script type="text/javascript" src="./assert.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+// <![CDATA[
+
+$.ready( function () {
+    $.require( "ui", function ( ui ) {
+        assert( ui === $.ui, "ui module cannot load async" );
+    } );
+    
+    $.require( "ui.button", function ( button ) {
+        assert( button === $.ui.button, "ui.button module cannot load async" );
+    } );
+    
+    $.require( "ui.button", "ui.dialog", function ( button, dialog ) {
+        assert( button === $.ui.button, "ui.button module cannot load async in multiple loads" );
+        assert( dialog === $.ui.dialog, "ui.dialog module cannot load async in multiple loads" );
+    } );
+} );
+
+// ]]>
+</script>
+</body>
+</html>
