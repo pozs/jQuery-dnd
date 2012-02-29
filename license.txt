@@ -1,4 +1,4 @@
-Parser plugin for jQuery
+Require plugin for jQuery
 Copyright (C) 2012 pozs <david.pozsar@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
