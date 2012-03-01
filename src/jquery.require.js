@@ -39,11 +39,18 @@ Hash.prototype.remove = function ( key ) {
 };
 
 Hash.prototype.set = function ( key, value ) {
-    if ( arguments.length > 1 ) {
-        this._hash[ "$" + key ] = value;
+    this._hash[ "$" + key ] = value;
+    return this;
+};
+
+Hash.prototype.merge = function ( other ) {
+    if ( other instanceof Hash ) {
+        for ( var i in other._hash ) {
+            this._hash[ i ] = other._hash[i];
+        }
     } else {
-        for ( var i in key ) {
-            this._hash[ "$" + i ] = key[i];
+        for ( var i in other ) {
+            this._hash[ "$" + i ] = other[i];
         }
     }
     
@@ -51,8 +58,9 @@ Hash.prototype.set = function ( key, value ) {
 };
 
 Hash.prototype.each = function ( f, context ) {
+    context = context || global;
     for ( var i in this._hash ) {
-        f.call( context || global, i.substr( 1 ), this._hash[i], this );
+        f.call( context, i.substr( 1 ), this._hash[i], this );
     }
 };
 
@@ -224,7 +232,7 @@ $.extend( {
             if ( arguments.length > 1 ) {
                 modules.set( mod, val );
             } else {
-                modules.set( mod );
+                modules.merge( mod );
             }
             
             return $.require;
@@ -244,7 +252,7 @@ $.extend( {
             if ( arguments.length > 1 ) {
                 namespaces.set( ns, val );
             } else {
-                namespaces.set( ns );
+                namespaces.merge( ns );
             }
             
             return $.require;
