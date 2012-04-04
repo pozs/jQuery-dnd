@@ -1,95 +1,93 @@
-Require plugin for jQuery
-========================
+Native HTML5 DnD plugin for jQuery
+==================================
 
-Yet another module-management system for jQuery.
+Fixes inconsistencies across browsers about the HTML5 native DnD implementations.
+
+* no need to cancel several events
+* adds support for additional media-types in dataTransfer.setData() / getData()  
+  f.ex. "text/x-misc"
 
 Demo
 ----
 
-[Examples](https://github.com/pozs/jQuery-require/tree/master/examples "Examples")
+[Examples](https://github.com/pozs/jQuery-dnd/tree/master/examples "Examples")
 
 Example Usage
 -------------
 
 ```js
-// Synchronous load
+// Simple set-up
 
-var plugin  = $.require( "plugin" ),
-    plugins = $.require( "plugin1", "plugin2" ),
-    plugin1 = plugins[0],
-    plugin2 = plugins[1];
-
-// Asynchronous load
-
-$.require( "ui", function ( ui ) {
-  console.assert( ui === $.ui );
+$( "#drag" ).drag( function ( evt ) {
+  // setup drag
+  evt.dataTransfer.effectAllowed = $.dnd.EFFECT_ALL; // "all"
+  evt.dataTransfer.setData( "text/x-misc", "Misc data" );
+  evt.dataTransfer.setDragImage( "<image url or image node>", -10, -10 );
+  $( this ).addClass( "active" );
 } );
 
-// Module-versioning support
-
-$.require( "ui@1.8.2", function ( ui ) {
-  console.assert( ui === $.ui );
+$( "#drop" ).drop( function ( evt ) {
+  // handle drop
+  console.log( evt.dataTransfer.getData( "text/x-misc" ) );
 } );
 
-$.require( "ui.button", function ( button ) {
-  console.assert( button === $.ui.button );
+// Advanced usage
+
+$( "#drag" ).drag( function ( evt ) {
+  // drag start
+}, function ( evt ) {
+  // drag end
 } );
 
-$.require( "ui.button", "ui.dialog", function ( button, dialog ) {
-  console.assert( button === $.ui.button );
-  console.assert( dialog === $.ui.dialog );
+$( "#drop" ).drop( function ( evt ) {
+  // drop
+}, function ( evt ) {
+  // dragover
+}, function ( evt ) {
+  // dragenter
+}, function ( evt ) {
+  // dragleave
+}, function ( evt ) {
 } );
 
-// Asynchronous load (using deferred)
+// or
 
-$.require( "plugin1", "plugin2", true ).
-  then( function ( plugin1, plugin2 ) {
-    // use plugins
-  } );
-
-$.require( "plugin1", "plugin2", function ( plugin1, plugin2 ) {
-  // use plugin1 f.ex.
-} ).then( function ( plugin1, plugin2 ) {
-  // use plugin2 f.ex.
+$( "#drag" ).drag( {
+    "start": function ( evt ) {
+        // drag start // required
+    },
+    "end": function ( evt ) {
+        // drag end
+    }
 } );
+
+$( "#drop" ).drop( {
+    "drop": function ( evt ) {
+        // drop // required
+    },
+    "over": function ( evt ) {
+        // dragover
+    },
+    "enter": function ( evt ) {
+        // dragenter
+    },
+    "leave": function ( evt ) {
+        // dragleave
+    }
+} );
+
 ```
 
-Features
---------
+Additional features
+-------------------
 
-*   configurable load-adapters for modules/plugins by name
-*   configurable load-adapters for namespaces
+* "html" is an alias for "text/html"
+* when "text/html" is set, "text/plain" is also set with tags stripped
 
-Load-adapters Example
+Browser compatibility
 ---------------------
 
-```js
-$.require.registerModule( "plugin1", function ( version ) {
-  return "plugin1" in $ ? {
-    "module": $.plugin1
-  } : {
-    "adapter": $.require.adapters.byName,
-    "params": { "var": "jQuery.fn.plugin1" },
-    "url": "/path/to/jquery.plugin1." +
-      ( version ? version + "." : "" ) + "js"
-  };
-} );
-
-$.require.registerNamespace( "ns1", function ( path, version ) {
-  return "ns1" in $ ? {
-    "module": $.ns1[path]
-  } : {
-    "adapter": $.require.adapters.byName,
-    "params": { "var": "jQuery.ns1." + path },
-    "url": "/path/to/jquery.ns1." + path + "." +
-      ( version ? version + "." : "" ) + "js"
-  };
-} );
-
-// to catch all other namespace/modules register namespace: ""
-```
-
-Known issues
-------------
-
-*   Default adapter for loading jQuery UI (google CDN) works only in async mode
+* IE 6+
+* Firefox 4+
+* Chrome
+* Opera 12+
