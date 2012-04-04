@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>HTML5 Drag'n'Drop example</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/jquery.dnd.js"></script>
+    <style type="text/css">
+    /* <![CDATA[ */
+    
+    [draggable]
+    {
+        cursor: move;
+    }
+    
+    #example
+    {
+        margin: 0em 2em;
+        padding: 0em 1em;
+        font-size: 200%;
+        text-align: center;
+    }
+    
+    #drag, #drop
+    {
+        margin: 1em;
+        padding: 1em;
+        display: block;
+    }
+    
+    #drag
+    {
+        background: #cce;
+    }
+    
+    #drop
+    {
+        background: #cec;
+    }
+    
+    #drag.active, #drop.active
+    {
+        background: #ccc;
+    }
+    
+    .avatar
+    {
+        color: #000;
+        border: 1px solid #888;
+        background: #aaa;
+    }
+    
+    /* ]]> */
+    </style>
+    <script type="text/javascript">
+    // <![CDATA[
+    $( function () {
+        
+        $( "#drag" ).drag( function ( evt ) {
+            evt.dataTransfer.effectAllowed = $.dnd.EFFECT_ALL;
+            evt.dataTransfer.setData( "text/uri-list", "# just a list\n" + location.href + "\n" + location.href );
+            evt.dataTransfer.setData( "text/html", "<b>Html</b>&nbsp;data\n<p>Multiple paragraphs" );
+            evt.dataTransfer.setData( "text/x-misc", "Misc data" );
+            evt.dataTransfer.setDragImage( "html5.png", -10, -10 );
+            $( this ).addClass( "active" );
+        }, function ( evt ) {
+            $( this ).removeClass( "active" );
+        } );
+        
+        $( "#drop" ).drop( function ( evt ) {
+            console.log( evt.dataTransfer.types );
+            console.log( evt.dataTransfer.getData( "text" ) );
+            console.log( evt.dataTransfer.getData( "text/plain" ) );
+            console.log( evt.dataTransfer.getData( "url" ) );
+            console.log( evt.dataTransfer.getData( "text/uri-list" ) );
+            console.log( evt.dataTransfer.getData( "html" ) );
+            console.log( evt.dataTransfer.getData( "text/html" ) );
+            console.log( evt.dataTransfer.getData( "text/x-misc" ) );
+            $( this ).removeClass( "active" );
+        }, function ( evt ) {
+            evt.dataTransfer.dropEffect = $.dnd.EFFECT_COPY;
+        }, function ( evt ) {
+            $( this ).addClass( "active" );
+        }, function ( evt ) {
+            $( this ).removeClass( "active" );
+        } );
+        
+    } );
+    // ]]>
+    </script>
+</head>
+<body>
+    <div id="example">
+        <div id="drag">Drag this</div>
+        <div id="drop">Drop Here</div>
+        <input id="input" type="file" multiple="multiple" />
+    </div>
+</body>
+</html>
