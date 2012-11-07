@@ -698,7 +698,7 @@ $.extend( $.fn, {
         }
         
         if ( $.dnd.isNative() ) {
-            this.on( "dragover", $.isFunction( enter )
+            this.on( "dragover", $.isFunction( over )
                     ? dndEvent( over, "over" ) : cancel )
                 .on( "dragenter", $.isFunction( enter )
                     ? dndEvent( enter, "enter" ) : cancel )
